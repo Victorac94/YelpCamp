@@ -1,0 +1,96 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead">YelpCamp</p>
+            <div class="list-group">
+                <li class="list-group-item active">Info 1</li>
+                <li class="list-group-item">Info 2</li>
+                <li class="list-group-item">Info 3</li>
+            </div>
+            <div id="map"></div>
+        </div>
+        <div class="col-md-9">
+            <div id="campThumbnail" class="thumbnail">
+                <img class="img-responsive" src="<%= camp.image %>">
+                <div class="caption-full caption">
+                    <h4 class="pull-right">$<%=camp.price%>/night</h4>
+                    <h4><a href="#"><%= camp.name %></a></h4>
+                    <div>
+                        <p class="inlineBlock">
+                            Submitted by: <em class="userColor"><%= camp.author.username %></em>
+                        </p>
+                        <div class="hoverOptions">
+                            <% if(currentUser && camp.author.id.equals(currentUser._id)) { %>
+                                <a href="/campgrounds/<%=camp._id%>/edit" class="btn btn-xs btn-warning">Edit</a>
+                                <form class="inline-form" action="/campgrounds/<%=camp._id%>?_method=DELETE" method="POST">
+                                    <button class="btn btn-xs btn-danger">Delete</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    </div>
+                    <p><%= camp.description %></p>
+                </div>
+            </div>
+            <div class="well posRelative">
+                <h3 class="inlineBlock">Comments</h3>
+                <div class="inlineBlockPositionedElem">
+                    <a href="/campgrounds/<%= camp._id %>/comments/new" class="btn btn-success">Add new comment</a>
+                </div>
+                <hr>
+                <% camp.comments.forEach((comment) => { %>
+                    <div class="row <%= currentUser && comment.author.id.equals(currentUser._id) ? 'userCommentColor' : 'paddingComment' %>">
+                        <div class="col-md-12 commentHover">
+                            <strong class="<%= currentUser && comment.author.id.equals(currentUser._id) ? 'userColor' : '' %>"><%= comment.author.username %></strong>
+                            <div class="inlineBlock">
+                                <% if(currentUser && comment.author.id.equals(currentUser._id)) { %>
+                                    <div class="hoverOptions">
+                                        <a href="/campgrounds/<%=camp._id%>/comments/<%=comment._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
+                                        
+                                        <form class="inline-form" action="/campgrounds/<%=camp._id%>/comments/<%=comment._id%>?_method=DELETE" method="POST">
+                                            <button class="btn btn-danger btn-xs">Delete</button>
+                                        </form>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <span class="pull-right">10 days ago</span>
+                            <p><%= comment.text %></p>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  function initMap() {
+    var lat = <%= camp.lat %>;
+    var lng = <%= camp.lng %>;
+    var center = {lat: lat, lng: lng };
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 8,
+        center: center,
+        scrollwheel: false
+    });
+    var contentString = `
+      <strong><%= camp.name %><br />
+      <%= camp.location %></strong>
+      <p><%= camp.description %></p>
+    `
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+    var marker = new google.maps.Marker({
+        position: center,
+        map: map
+    });
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+  }
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVKm2X8aVSyjGt1-A5k8Xqp3DKDzdcu2E&callback=initMap"></script>
+
+<% include ../partials/footer %>

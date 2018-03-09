@@ -1,0 +1,68 @@
+.thumbnail img {
+    width: 100%;
+}
+
+.thumbnail {
+    padding: 0;
+}
+
+.new-form {
+    width: 30%;
+    min-width: 300px;
+    margin: 30px auto;
+}
+
+.inline-form {
+    display: inline-block;
+}
+
+.inlineBlockPositionedElem {
+    display: inline-block;
+    position: absolute;
+    right: 25px;
+    top: 36px;
+}
+
+.posRelative {
+    position: relative;
+}
+
+.inlineBlock {
+    display: inline-block;
+}
+
+.hoverOptions {
+    display: inline-block;
+    opacity: 0;
+    margin-left: 10px;
+}
+
+.userCommentColor {
+    background-color: #dee6ef;
+    border-radius: 3px;
+    padding-top: 5px;
+}
+
+.paddingComment {
+    padding-top: 5px;
+}
+
+.userColor {
+    color: #1153a3;
+}
+
+.commentHover:hover .hoverOptions {
+    opacity: 1;
+    transition: 0.2s;
+}
+
+#campThumbnail:hover .hoverOptions {
+    opacity: 1;
+    transition: 0.2s;
+}
+
+/* Google Maps */
+#map {
+    height: 400px;
+    width: 100%;
+}
