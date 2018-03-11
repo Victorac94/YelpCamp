@@ -87,7 +87,7 @@ router.get("/:id", function(req, res) {
            res.redirect("/campgrounds");
        } else {
            //render show template with that campground
-           res.render("campgrounds/show", {camp: foundCampground});
+           res.render("campgrounds/show", {camp: foundCampground, googleApiKey: process.env.GOOGLEAPIKEY});
        }
     });
 });
