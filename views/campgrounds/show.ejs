@@ -16,10 +16,10 @@
                 <img class="img-responsive" src="<%= camp.image %>">
                 <div class="caption-full caption">
                     <h4 class="pull-right">$<%=camp.price%>/night</h4>
-                    <h4><a href="#"><%= camp.name %></a></h4>
+                    <h4><a href="#"><%= camp.name %></a> - <%= camp.location %></h4>
                     <div>
                         <p class="inlineBlock">
-                            Submitted by: <em class="userColor"><%= camp.author.username %></em>
+                            Submitted by: <em class="userColor"><%= camp.author.username %></em>, <%= moment(camp.createdAt).fromNow() %>
                         </p>
                         <div class="hoverOptions">
                             <% if(currentUser && camp.author.id.equals(currentUser._id)) { %>
@@ -54,7 +54,7 @@
                                     </div>
                                 <% } %>
                             </div>
-                            <span class="pull-right">10 days ago</span>
+                            <span class="pull-right"><%= moment(comment.createdAt).fromNow()%></span>
                             <p><%= comment.text %></p>
                         </div>
                     </div>

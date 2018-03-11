@@ -35,7 +35,8 @@
         var input = document.getElementById("location");
         var autocomplete = new google.maps.places.Autocomplete(input);
     }
+    console.log("it works");
 </script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVKm2X8aVSyjGt1-A5k8Xqp3DKDzdcu2E&libraries=places&callback=activatePlacesSearch"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=<%=googleApiKey%>&libraries=places&callback=activatePlacesSearch"></script>
 
 <% include ../partials/footer %>

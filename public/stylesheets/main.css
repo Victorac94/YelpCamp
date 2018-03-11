@@ -56,6 +56,11 @@
     transition: 0.2s;
 }
 
+.warning-text {
+    color: #f78800;
+    
+}
+
 #campThumbnail:hover .hoverOptions {
     opacity: 1;
     transition: 0.2s;

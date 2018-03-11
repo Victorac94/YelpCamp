@@ -6,6 +6,7 @@ var Campground = require("../models/campground");
 var middleware = require("../middleware");
 
 var NodeGeocoder = require('node-geocoder');
+var faker = require("faker");
  
 var options = {
   provider: 'google',
@@ -77,6 +78,19 @@ router.get("/new", middleware.isLoggedIn, function(req, res) {
    res.render("campgrounds/new") ;
 });
 
+//NEW RANDOM - show form with random prefilled data
+router.get("/new/random", middleware.isLoggedIn, function(req, res) {
+    var random = {};
+    random.name = faker.random.word() + " " + faker.random.word();
+    random.price = faker.commerce.price();
+    random.img = "https://source.unsplash.com/800x450/?nature";
+    random.desc = faker.lorem.paragraph();
+    random.place = faker.address.zipCode();
+    console.log(random);
+    
+    res.render("campgrounds/new-random", {random: random});
+});
+
 //SHOW - shows more info about one campground
 router.get("/:id", function(req, res) {
     //find the campground with provided id
@@ -98,7 +112,7 @@ router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res) 
        if(err) {
         console.log(err);
        } else {
-           res.render("campgrounds/edit", {campground: foundCampground});
+           res.render("campgrounds/edit", {campground: foundCampground, googleApiKey: process.env.GOOGLEAPIKEY});
        }
     });
 });
