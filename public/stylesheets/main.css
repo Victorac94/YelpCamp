@@ -19,8 +19,14 @@
 .inlineBlockPositionedElem {
     display: inline-block;
     position: absolute;
-    right: 25px;
     top: 36px;
+    right: 25px;
+}
+
+.absoluteTopRight {
+    position: absolute;
+    top: 27px;
+    right: 20px;
 }
 
 .posRelative {
@@ -37,18 +43,34 @@
     margin-left: 10px;
 }
 
+.paddingComment {
+    padding-top: 5px;
+}
+
+.paddingBox {
+    padding: 20px;
+}
+
+.leftRightMargin {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.userColor {
+    color: #1153a3;
+}
+
 .userCommentColor {
     background-color: #dee6ef;
     border-radius: 3px;
     padding-top: 5px;
 }
 
-.paddingComment {
-    padding-top: 5px;
-}
-
-.userColor {
-    color: #1153a3;
+.commentBox {
+    border-top: 1px solid #eef;
+    border-left: 1px solid #eef;
+    border-right: 1px solid #eef;
+    border-radius: 6px;
 }
 
 .commentHover:hover .hoverOptions {
@@ -58,7 +80,6 @@
 
 .warning-text {
     color: #f78800;
-    
 }
 
 #campThumbnail:hover .hoverOptions {

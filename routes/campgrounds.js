@@ -83,7 +83,7 @@ router.get("/new/random", middleware.isLoggedIn, function(req, res) {
     var random = {};
     random.name = faker.random.word() + " " + faker.random.word();
     random.price = faker.commerce.price();
-    random.img = "https://source.unsplash.com/800x450/?nature";
+    random.img = "https://source.unsplash.com/800x600/?nature";
     random.desc = faker.lorem.paragraph();
     random.place = faker.address.zipCode();
     console.log(random);

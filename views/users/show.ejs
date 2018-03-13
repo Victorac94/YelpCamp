@@ -1,0 +1,61 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <% if(user) { %>
+        <div class="row">
+            <div class="col-md-4 posRelative">
+                <div>
+                    <h3 class="inlineBlock"><%=user.username%></h3>
+                    <% if(currentUser && user._id.equals(currentUser._id)) { %>
+                        <a class="absoluteTopRight" href="/users/<%=user._id%>/edit"> <i class="glyphicon glyphicon-cog"></i> Edit Profile</a>
+                    <% } %>
+                    <br>
+                </div>
+                <div class="thumbnail">
+                    <img src="<%=user.avatar%>" alt="Profile picture">
+                    <div class="paddingBox">
+                        <h4><em>Name: </em><%=user.firstName + " " + user.lastName%></h4>
+                        <p><em>Email: </em><%=user.email%></p>
+                        <p><em>Bio: </em><%=user.about%></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <h2 class="text-center">Added Campgrounds</h2>
+                <% allCampgrounds.forEach((camp) => { %>
+                    <% if(camp.author.id.equals(user._id)) { %>
+                        <div class="thumbnail text-center leftRightMargin">
+                            <img src="<%=camp.image%>" alt="<%=camp.name%>'s picture">
+                            <div class="caption">
+                                <h3><%=camp.name%></h3>
+                            </div>
+                            <p>
+                                <a href="/campgrounds/<%=camp._id%>" class="btn btn-primary">+ info</a>
+                            </p>
+                        </div>
+                    <% } %>
+                <% }); %>
+            </div>
+            <div class="col-md-4">
+                <h2 class="text-center">Comments</h2>
+                <% allComments.forEach((comment) => { %>
+                    <% if(user._id.equals(comment.author.id)) { %>
+                        <div class="row commentBox">
+                            <div class="col-md-12">
+                                <strong class="userColor">
+                                    <%= comment.author.username %>
+                                </strong>
+                                <span class="pull-right"><%= moment(comment.createdAt).fromNow()%></span>
+                                <p><%= comment.text %></p>
+                            </div>
+                        </div>
+                    <% } %>
+                <% }); %>
+            </div>
+        </div>
+    <% } else { %>
+        <h3>That user does not exist any longer.</h3>
+    <% } %>
+</div>
+
+<% include ../partials/footer %>

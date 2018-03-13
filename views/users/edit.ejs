@@ -1,0 +1,51 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <br>
+            <br>
+            <br>
+            
+            <div class="thumbnail">
+                <img src="<%=user.avatar%>" alt="Profile picture">
+            </div>
+            <a class="btn btn-primary" href="/users/<%=user._id%>">Back to Profile</a>
+        </div>
+        <div class="col-md-7" style="border-left: 1px solid #dadadf">
+            <div class="row">
+                <h1 class="text-center"><%=user.username%></h1>
+                <div class="new-form">
+                    <form action="/users/<%=user._id%>?_method=PUT" method="POST">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input class="form-control" type="text" name="firstName" id="firstName" value="<%=user.firstName%>" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input class="form-control" type="text" name="lastName" id="lastName" value="<%=user.lastName%>" placeholder="Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input class="form-control" type="text" name="email" id="email" value="<%=user.email%>" placeholder="Email">
+                        </div>
+                        <div class="form-group">
+                            <label for="avatar">Profile Picture Url</label>
+                            <input class="form-control" type="text" name="avatar" id="avatar" value="<%=user.avatar%>" placeholder="Image url...">
+                        </div>
+                        <div class="form-group">
+                            <label for="aboutMe">About me</label>
+                            <textarea class="form-control" name="about" id="aboutMe" placeholder="About me..."><%=user.about%></textarea>
+                        </div>
+                        <div class="form-group new-form-submit">
+                            <button class="btn btn-md btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>

@@ -31,7 +31,9 @@
                             <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/login">Login</a></li>
                             <li class="<%= typeof page !== 'undefined' && page === 'register' ? 'active' : '' %>"><a href="/register">Sign Up</a></li>
                         <% } else { %>
-                            <li><a href="#">Signed In As: <%= currentUser.username %></a></li>
+                            <li class="<%= typeof page !== 'undefined' && page === 'profile' ? 'active' : '' %>">
+                                <a href="/users/<%=currentUser._id%>"><i class="glyphicon glyphicon-user"></i> <%= currentUser.username %></a>
+                            </li>
                             <li><a href="/logout">Logout</a></li>
                         <% } %>
                     </ul>

@@ -19,10 +19,10 @@
                     <h4><a href="#"><%= camp.name %></a> - <%= camp.location %></h4>
                     <div>
                         <p class="inlineBlock">
-                            Submitted by: <em class="userColor"><%= camp.author.username %></em>, <%= moment(camp.createdAt).fromNow() %>
+                            Submitted by: <a href="/users/<%=camp.author.id%>"><em class="userColor"><%= camp.author.username %></em></a>, <%= moment(camp.createdAt).fromNow() %>
                         </p>
                         <div class="hoverOptions">
-                            <% if(currentUser && camp.author.id.equals(currentUser._id)) { %>
+                            <% if(currentUser && camp.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin) { %>
                                 <a href="/campgrounds/<%=camp._id%>/edit" class="btn btn-xs btn-warning">Edit</a>
                                 <form class="inline-form" action="/campgrounds/<%=camp._id%>?_method=DELETE" method="POST">
                                     <button class="btn btn-xs btn-danger">Delete</button>
@@ -42,9 +42,13 @@
                 <% camp.comments.forEach((comment) => { %>
                     <div class="row <%= currentUser && comment.author.id.equals(currentUser._id) ? 'userCommentColor' : 'paddingComment' %>">
                         <div class="col-md-12 commentHover">
-                            <strong class="<%= currentUser && comment.author.id.equals(currentUser._id) ? 'userColor' : '' %>"><%= comment.author.username %></strong>
+                            <strong class="<%= currentUser && comment.author.id.equals(currentUser._id) ? 'userColor' : '' %>">
+                                <a href="/users/<%=comment.author.id%>">
+                                    <%= comment.author.username %>
+                                </a>
+                            </strong>
                             <div class="inlineBlock">
-                                <% if(currentUser && comment.author.id.equals(currentUser._id)) { %>
+                                <% if(currentUser && comment.author.id.equals(currentUser._id) || currentUser && currentUser.isAdmin) { %>
                                     <div class="hoverOptions">
                                         <a href="/campgrounds/<%=camp._id%>/comments/<%=comment._id%>/edit" class="btn btn-warning btn-xs">Edit</a>
                                         

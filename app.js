@@ -27,6 +27,7 @@ app.use(methodOverride("_method"));
 app.use(flash());
 //seedDB(); //Seeds the database
 
+//Moment.js
 app.locals.moment = require('moment');
 
 //PASSPORT CONFIGURATION
