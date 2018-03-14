@@ -2,6 +2,7 @@ var express = require("express");
 var router  = express.Router({mergeParams: true});
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
+var User    = require("../models/user");
 //Como hemos creado el archivo del middleware con el nombre 'index.js' aqui solo hace falta
 //requerir la carpeta padre. Ya que haciendo eso siempre busca el archivo que se llame 'index.'
 var middleware = require("../middleware");
@@ -29,22 +30,38 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
           res.redirect("/campgrounds");
       }
       else {
-        Comment.create(req.body.comment, function(err, createdComment) {
+        var newComment = {
+            text: req.body.comment,
+            author: {
+                id: req.user._id,
+                username: req.user.username
+            }
+        }
+        Comment.create(newComment, function(err, createdComment) {
            if(err) {
                console.log(err);
                req.flash("error", "Something went wrong.");
-               res.redirect("/campgrounds");
+               res.redirect("back");
            }
            else {
-               //add username and id to comment
-               createdComment.author.id = req.user._id;
-               createdComment.author.username = req.user.username;
-               //save created comment
-               createdComment.save();
-               foundCampground.comments.push(createdComment._id);
-               foundCampground.save();
-               req.flash("success", "Successfully added comment!");
-               res.redirect("/campgrounds/" + req.params.id);
+               //Add created comment to User model
+               User.findById(req.user._id, function(err, foundUser) {
+                  if(err) {
+                      console.log(err);
+                      req.flash("error", "There was an error");
+                      res.redirect("back");
+                  } else {
+                      foundCampground.comments.push(createdComment._id);
+                      foundCampground.save();
+                      
+                      foundUser.comments.push(createdComment);
+                      foundUser.save(function(err, savedUser) {
+                          if(err) console.log(err);
+                      });
+                      req.flash("success", "Successfully added comment!");
+                      res.redirect("/campgrounds/" + req.params.id);
+                  }
+               });
            }
         });
       }

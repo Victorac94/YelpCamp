@@ -22,8 +22,7 @@ router.post("/register", function(req, res) {
             username: req.body.username,
             firstName: req.body.firstName,
             lastName: req.body.lastName,
-            email: req.body.email,
-            avatar: req.body.avatar
+            email: req.body.email
         });
     if(req.body.secretCode === "passCode1234") {
         newUser.isAdmin = true;
@@ -33,6 +32,10 @@ router.post("/register", function(req, res) {
             console.log(err);
             return res.render("register", {"error": err.message});
         } 
+        if(req.body.avatar != "") {
+            user.avatar = req.body.avatar;
+            user.save();
+        }
         passport.authenticate("local")(req, res, function(){
             req.flash("success", "Welcome to YelpCamp " + user.username);
             res.redirect("/campgrounds") ;
@@ -58,67 +61,5 @@ router.get("/logout", function(req, res) {
     res.redirect("/campgrounds");
 });
 
-//SHOW - USER PROFILE
-router.get("/users/:id", function(req, res) {
-   User.findById(req.params.id, function(err, foundUser) {
-       if(err) {
-           console.log(err);
-           req.flash("error", "There was an error");
-           res.redirect("back");
-       } else {
-           Campground.find({}, function(err, foundCampgrounds) {
-              if(err) {
-                console.log(err);
-                res.flash("error", "There was an error");
-                res.redirect("back");
-              } else {
-                  Comment.find({}, function(err, foundComments) {
-                      if(err) {
-                        console.log(err);
-                        res.flash("error", "There was an error");
-                        res.redirect("back");
-                      } else {
-                        res.render("users/show", {user: foundUser, allCampgrounds: foundCampgrounds, allComments: foundComments, page: "profile"});
-                      }
-                  });
-              }
-           });
-       }
-   }) ;
-});
-
-//EDIT - SHOW EDIT USER
-router.get("/users/:id/edit", middleware.checkProfileOwnership, function(req, res) {
-    User.findById(req.params.id, function(err, foundUser) {
-       if(err) {
-           console.log(err);
-           res.flash("error", "There was an error");
-           res.redirect("/users/" + req.params.id);
-       } else {
-           res.render("users/edit", {user: foundUser, page: "profile"});
-       }
-    });
-});
-
-//UPDATE - USER PROFILE
-router.put("/users/:id/edit", middleware.checkProfileOwnership, function(req, res) {
-    var newData = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        avatar: req.body.avatar,
-        email: req.body.email,
-        about: req.body.about
-    }
-   User.findByIdAndUpdate(req.params.id, newData, function(err, updatedUser) {
-       if(err) {
-           console.log(err);
-           req.flash("error", "There was an error");
-           res.redirect("/users/" + req.params.id);
-       } else {
-           req.flash("success", "Profile successfully updated!");
-           res.redirect("/users/" + req.params.id);
-       }
-   });
-});
 
 module.exports = router;

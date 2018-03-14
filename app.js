@@ -14,6 +14,7 @@ var express         = require("express"),
     //requiring routes
 var campgroundRoutes = require("./routes/campgrounds"),
     commentRoutes    = require("./routes/comments"),
+    userRoutes       = require("./routes/users"),
     indexRoutes      = require("./routes/index");
     
 
@@ -53,6 +54,7 @@ app.use(function(req, res, next) {
 app.use(indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
+app.use(userRoutes);
 
 app.listen(process.env.PORT, process.env.IP, function() {
    console.log("The YelpCamp v1 server has started!") ;

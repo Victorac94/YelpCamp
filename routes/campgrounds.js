@@ -1,6 +1,7 @@
 var express = require("express");
 var router  = express.Router();
 var Campground = require("../models/campground");
+var User    = require("../models/user");
 //Como hemos creado el archivo del middleware con el nombre 'index.js' aqui solo hace falta
 //requerir la carpeta padre. Ya que haciendo eso siempre busca el archivo que se llame 'index.'
 var middleware = require("../middleware");
@@ -66,6 +67,15 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
            if(err) {
                console.log(err);
            } else {
+               User.findById(req.user._id, function(err, foundUser) {
+                  if (err) console.log(err) ;
+                  else {
+                    foundUser.campgrounds.push(newlyCreated);
+                    foundUser.save(function(err, savedUser) {
+                        if(err) console.log(err);
+                    });
+                  }
+               });
                req.flash("success", "Added new Campground!");
                res.redirect("/campgrounds");
            }
@@ -75,7 +85,7 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
 
 //NEW - show form to create new campground
 router.get("/new", middleware.isLoggedIn, function(req, res) {
-   res.render("campgrounds/new") ;
+   res.render("campgrounds/new", {googleApiKey: process.env.GOOGLEAPIKEY}) ;
 });
 
 //NEW RANDOM - show form with random prefilled data
@@ -86,9 +96,8 @@ router.get("/new/random", middleware.isLoggedIn, function(req, res) {
     random.img = "https://source.unsplash.com/800x600/?nature";
     random.desc = faker.lorem.paragraph();
     random.place = faker.address.zipCode();
-    console.log(random);
     
-    res.render("campgrounds/new-random", {random: random});
+    res.render("campgrounds/new-random", {random: random, googleApiKey: process.env.GOOGLEAPIKEY});
 });
 
 //SHOW - shows more info about one campground

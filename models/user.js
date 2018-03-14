@@ -1,5 +1,10 @@
-var mongoose = require("mongoose"),
-passportLocalMongoose = require("passport-local-mongoose");
+var mongoose            = require("mongoose"),
+passportLocalMongoose   = require("passport-local-mongoose"),
+Comment                 = require("./comment.js"),
+commentSchema           = mongoose.model("Comment").schema,
+Campground              = require("./campground.js"),
+campgroundSchema        = mongoose.model("Campground").schema;
+
 
 var UserSchema = new mongoose.Schema({
     username: String, 
@@ -8,8 +13,13 @@ var UserSchema = new mongoose.Schema({
     lastName: String,
     email: String,
     about: String,
-    avatar: String,
-    isAdmin: {type: Boolean, default: false}
+    avatar: {
+        type: String,
+        default: "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433_960_720.png"
+    },
+    isAdmin: {type: Boolean, default: false}, 
+    comments: [commentSchema],
+    campgrounds: [campgroundSchema]
 });
 
 UserSchema.plugin(passportLocalMongoose);

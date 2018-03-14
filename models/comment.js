@@ -1,4 +1,6 @@
-var mongoose = require("mongoose");
+var mongoose = require("mongoose"),
+Campground = require("./campground.js"),
+campgroundSchema = mongoose.model("Campground").schema;
 
 var commentSchema = mongoose.Schema({
    text: String,
