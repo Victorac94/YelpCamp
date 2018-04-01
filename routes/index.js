@@ -1,10 +1,18 @@
-var express = require("express"),
-    router  = express.Router(),
-    User    = require("../models/user"),
-    Campground = require("../models/campground"),
-    Comment = require("../models/comment"),
-    passport = require("passport"),
-    middleware = require("../middleware");
+var express     = require("express"),
+    router      = express.Router(),
+    passport    = require("passport"),
+    User        = require("../models/user"),
+    Campground  = require("../models/campground"),
+    async       = require("async"),
+    nodemailer  = require("nodemailer"),
+    crypto      = require("crypto");
+    
+//SETUP VARS FOR MAILGUN PASSWORD RESET
+var api_key = 'key-ee94626096513ee20bd578d74306ea27';
+var domain = 'sandbox2b24dacbc1bb419aac6c9461525c45cc.mailgun.org';
+var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+
+ 
 
 //root route
 router.get("/", function(req, res) {
@@ -59,6 +67,131 @@ router.get("/logout", function(req, res) {
     req.logout();
     req.flash("success", "Successfully logged out!");
     res.redirect("/campgrounds");
+});
+
+//forgot password
+router.get("/forgot", function(req, res) {
+   res.render("forgot") ;
+});
+
+router.post("/forgot", function(req, res, next) {
+   async.waterfall([
+       function(done) {
+           crypto.randomBytes(20, function(err, buf) {
+              if(err) console.log(err);
+              else {
+                  var token = buf.toString("hex");
+                  done(err, token);
+              }
+           });
+       },
+       function(token, done) {
+           User.findOne({email: req.body.email}, function(err, user) {
+              if(err || !user) {
+                  console.log(err);
+                  req.flash("error", "No account with that user email exists");
+                  return res.redirect("/forgot");
+              } else {
+                  user.resetPasswordToken = token;
+                  user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+                  
+                  user.save(function(err) {
+                      if(err) console.log(err);
+                      
+                      done(err, token, user);
+                  });
+              }
+           });
+       },
+        function(token, user, done) {
+            var mailOptions = {
+              from: 'YelpCamp <victorac94@hotmail.com>',
+              to: user.email,
+              subject: 'YelpCamp Password Reset',
+              text: "You are receiving this because you (or someone else) have requested the reset of the password. " + 
+                  "Please click on the following link, or paste this into your browser to complete the process\n\n" + 
+                  "https://webdevbootcamp-victorac94.c9users.io/reset/" + token + "\n\n" + 
+                  "If you did not request this, please ignore this email and your password will remain unchanged."
+            };
+             
+            mailgun.messages().send(mailOptions, function (err, body) {
+                if(err) {
+                    console.log(err);
+                    return;
+                }
+              req.flash("success", "An email has been sent to " + user.email + " with further instructions.");
+              done(err, "done");
+            });
+        }
+       ], function(err) {
+           if(err) return next(err);
+           res.redirect("/forgot");
+       }); 
+});
+
+router.get("reset/:token", function(req, res) {
+   User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt: Date.now() }}, function(err, foundUser) {
+       if(err) console.log(err);
+       if(!foundUser) {
+            req.flash("error", "Password reset token is invalid or has expired");
+            return res.redirect("/forgot");
+       }
+       res.render("reset", {token: req.params.token});
+   }) ;
+});
+
+router.post("reset/:token", function(req, res) {
+    async.waterfall([
+        function(done) {
+            User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt: Date.now()}}, function(err, user) {
+               if(err) console.log(err);
+               if(!user)  {
+                   req.flash("error", "Password reset token is invalid or has expired");
+                   return res.redirect("back");
+               }
+               if(req.body.password === req.body.confirm) {
+                   user.setPassword(req.body.password, function(err) {
+                       if(err) console.log(err);
+                        user.resetPasswordToken = undefined;
+                        user.resetPasswordExpires = undefined;
+                        
+                        user.save(function(err) {
+                            if(err) console.log(err);
+                           req.logIn(user, function(err) {
+                               done(err, user);
+                           }) ;
+                        });
+                   });
+               } else {
+                   req.flash("error", "Passwords do not match");
+                   return res.redirect("back");
+               }
+            });
+        }, 
+        function(user, done) {
+            var mailOptions = {
+              from: 'YelpCamp <victorac94@hotmail.com>',
+              to: user.email,
+              subject: 'Your password has been changed',
+              text: "Hello,\n\n" + 
+                "This is a confirmation that the password for your account " + user.email + " has been changed."
+            };
+             
+            mailgun.messages().send(mailOptions, function (err, body) {
+                if(err) {
+                  console.log(err);
+                  req.flash("error", "There was an error. The confirmation email could not be sent.");
+                  res.redirect("/forgot");
+              } else {
+                  req.flash("success", "Success your password has been changed!");
+                  done(err);
+              }
+            });
+        }
+        ], function(err) {
+            if(err) console.log(err);
+            res.redirect("/campgrounds");
+        });
 });
 
 

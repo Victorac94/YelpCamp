@@ -53,4 +53,39 @@ router.put("/users/:id/edit", middleware.checkProfileOwnership, function(req, re
    });
 });
 
+//EDIT - SHOW CHANGE PASSWORD
+router.get("/users/:id/changePassword", middleware.checkProfileOwnership, function(req, res) {
+    User.findById(req.params.id, function(err, foundUser) {
+        if(err) console.log(err);
+       res.render("users/changePassword", {user: foundUser}) ; 
+    });
+});
+
+//UPDATE - CHANGE USER PASSWORD
+router.put("/users/:id/changePassword", middleware.checkProfileOwnership, function(req, res) {
+    if(req.body.password === req.body.confirm) {
+        User.findById(req.params.id, function(err, foundUser) {
+            if(err) console.log(err);
+            foundUser.setPassword(req.body.password, function(err) {
+               if(err) {
+                   console.log(err);
+                   req.flash("error", "There was an error. Try again.");
+                   res.redirect("back");
+               } else {
+                   foundUser.save(function(err) {
+                      if(err) console.log(err);
+                      else {
+                          req.flash("success", "Password updated!");
+                          res.redirect("/users/" + req.params.id);
+                      }
+                   });
+               }
+            });
+        });
+    } else {
+        req.flash("error", "Passwords do not match.");
+        res.redirect("back");
+    }
+});
+
 module.exports = router;

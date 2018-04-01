@@ -33,7 +33,7 @@ app.locals.moment = require('moment');
 
 //PASSPORT CONFIGURATION
 app.use(require("express-session")({
-    secret: process.env.PASSPORTSECRET,
+    secret: "HolaHolitaVecinito!",
     resave: false,
     saveUninitialized: false
 }));
@@ -55,6 +55,7 @@ app.use(indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 app.use("/campgrounds/:id/comments", commentRoutes);
 app.use(userRoutes);
+
 
 app.listen(process.env.PORT, process.env.IP, function() {
    console.log("The YelpCamp v1 server has started!") ;

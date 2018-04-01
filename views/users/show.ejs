@@ -3,6 +3,7 @@
 <div class="container">
     <% if(user) { %>
         <div class="row">
+            <!-- USER PICTURE -->
             <div class="col-md-4 posRelative">
                 <div>
                     <h3 class="inlineBlock"><%=user.username%></h3>
@@ -20,8 +21,9 @@
                     </div>
                 </div>
             </div>
+            <!-- USER CAMPGROUNDS -->
             <div class="col-md-4">
-                <h2 class="text-center">Added Campgrounds</h2>
+                <h2 class="text-center titleColor">Added Campgrounds</h2>
                 <% campgrounds.forEach((camp) => { %>
                     <div class="thumbnail text-center leftRightMargin">
                         <img src="<%=camp.image%>" alt="<%=camp.name%>'s picture">
@@ -34,18 +36,21 @@
                     </div>
                 <% }); %>
             </div>
+            <!-- USER COMMENTS -->
             <div class="col-md-4">
-                <h2 class="text-center">Comments</h2>
+                <h2 class="text-center titleColor">Comments</h2>
                 <% comments.forEach((comment) => { %>
-                    <div class="row commentBox">
-                        <div class="col-md-12">
-                            <strong class="userColor">
-                                <%= user.username %>
-                            </strong>
-                            <span class="pull-right"><%= moment(comment.createdAt).fromNow()%></span>
-                            <p><%= comment.text %></p>
+                    <a href="/campgrounds/<%=comment.campground%>" class="preventLinkColor">
+                        <div class="row commentBox">
+                            <div class="col-md-12">
+                                <strong class="userColor">
+                                    <%= user.username %>
+                                </strong>
+                                <span class="pull-right createdAtColor"><%= moment(comment.createdAt).fromNow()%></span>
+                                <p class="titleColor"><%= comment.text %></p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 <% }); %>
             </div>
         </div>

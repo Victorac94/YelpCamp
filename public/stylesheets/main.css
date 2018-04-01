@@ -12,6 +12,11 @@
     margin: 30px auto;
 }
 
+.register-form {
+    width: 60%;
+    margin: 30px auto;
+}
+
 .inline-form {
     display: inline-block;
 }
@@ -45,6 +50,8 @@
 
 .paddingComment {
     padding-top: 5px;
+    margin-left: -7px;
+    margin-right: -7px;
 }
 
 .paddingBox {
@@ -56,6 +63,10 @@
     margin-right: 40px;
 }
 
+.linkColor {
+    color: #2772c6;
+}
+
 .userColor {
     color: #1153a3;
 }
@@ -64,6 +75,8 @@
     background-color: #dee6ef;
     border-radius: 3px;
     padding-top: 5px;
+    margin: 1px -7px;
+    background: linear-gradient(to bottom, #e3ebf4, #dae3ed);
 }
 
 .commentBox {
@@ -71,6 +84,11 @@
     border-left: 1px solid #eef;
     border-right: 1px solid #eef;
     border-radius: 6px;
+    padding-top: 10px;
+}
+
+.commentBox:last-child {
+    border-bottom: 1px solid #eef;
 }
 
 .commentHover:hover .hoverOptions {
@@ -80,6 +98,35 @@
 
 .warning-text {
     color: #f78800;
+}
+
+.custom-buttom {
+    border-color: #f78800;
+    color: #f78800;
+}
+
+.titleColor {
+    color: #444;
+}
+
+.createdAtColor {
+    color: #5a5a5a;
+}
+
+.preventLinkColor, .preventLinkColor:hover {
+    color: black;
+}
+
+.preventLinkColor:hover .commentBox {
+    background: linear-gradient(to bottom, #eaf2ff, #e5eefc);
+}
+
+.caption {
+    padding: 15px !important;
+}
+
+.jumbotron {
+    background: linear-gradient(to bottom, #f4f5f7, #e3e5ea);
 }
 
 #campThumbnail:hover .hoverOptions {

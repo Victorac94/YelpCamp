@@ -35,7 +35,8 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
             author: {
                 id: req.user._id,
                 username: req.user.username
-            }
+            },
+            campground: req.params.id
         }
         Comment.create(newComment, function(err, createdComment) {
            if(err) {

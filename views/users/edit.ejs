@@ -11,6 +11,8 @@
                 <img src="<%=user.avatar%>" alt="Profile picture">
             </div>
             <a class="btn btn-primary" href="/users/<%=user._id%>">Back to Profile</a>
+            <br>
+            <br>
         </div>
         <div class="col-md-7" style="border-left: 1px solid #dadadf">
             <div class="row">
@@ -39,7 +41,9 @@
                         </div>
                         <div class="form-group new-form-submit">
                             <button class="btn btn-md btn-primary">Submit</button>
+                            <a href="/users/<%= user._id %>/changePassword" class="btn btn-default pull-right custom-buttom">Change Password</a>
                         </div>
+                        
                     </form>
                 </div>
             </div>
