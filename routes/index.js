@@ -3,7 +3,6 @@ var express     = require("express"),
     passport    = require("passport"),
     User        = require("../models/user"),
     Campground  = require("../models/campground"),
-    async       = require("async"),
     nodemailer  = require("nodemailer"),
     crypto      = require("crypto");
     

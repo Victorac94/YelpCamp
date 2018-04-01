@@ -160,186 +160,80 @@ router.put("/:id", middleware.checkCampgroundOwnership, function(req, res) {
 //DESTROY - remove a specific campground
 router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res) {
         
-        new Promise (function(resolve, reject) {
-            Campground.findById(req.params.id, function(err, foundCampground) {
-                if(err) return console.log(err) ;
+    // DELETE CORRESPONDING COMMENTS FROM THE USER MODEL
+    new Promise (function(resolve, reject) {
+        Campground.findById(req.params.id, function(err, foundCampground) {
+            if(err) return console.log(err) ;
+           
+            // Look for every comment the selected Campground has
+            for(var i = 0; i < foundCampground.comments.length; i++) {
+                var commentId = foundCampground.comments[i];
                
-                // Look for every comment the selected Campground has
-                for(var i = 0; i < foundCampground.comments.length; i++) {
-                    var commentId = foundCampground.comments[i];
-                   
-                    Comment.findById(commentId, function(err, foundComment) {
-                        if(err) return console.log(err);
-                        
-                        // Look for the author's ID of each comment found
-                        User.findById(foundComment.author.id, function(err, foundUser){
-                            if(err) return console.log("There was an error: " + err);
-                            
-                            console.log("This is outside of forEach: " + foundUser.comments);
-                            
-                            // Look for every comment the author has posted on any campground
-                            for(var t = 0; t < foundUser.comments.length; t++) {
-                                var comment = foundUser.comments[t];
-                                
-                                console.log("This is inside of forEach: " + foundUser.comments);
-                                
-                                // Check if the comment from the current user we're iterating belongs to the current campground
-                                if(foundComment._id.equals(comment._id)) {
-                                    console.log("The ID's are the same: " + foundComment._id + " AND " + comment._id);
-                                    
-                                    // If so delete that comment from that user
-                                    User.findByIdAndUpdate(foundUser._id, {$pull: {comments: {_id: comment._id}, campgrounds: {_id: foundCampground._id}}}, function(err) {
-                                        if(err) reject(console.log("The find and Update didn't quite work"));
-                                    });
-                                    //if we delete the comment from the foundUser.comments array then break this loop and 
-                                    //look for the next comment in the campground
-                                    break;
-                                } else {
-                                    console.log("ID'S DO NOT MATCH; FIRST: " + foundComment._id + " SECOND: " + comment._id);
-                                }
-                            }
-                            
-                        });
-                    });
-                }
-                resolve();
-            });
-        }).then(function() {
-            Campground.findById(req.params.id, function(err, foundCampground) {
-                if(err) return console.log(err) ;
-                
-                foundCampground.comments.forEach((commentId) => {
-                    Comment.findByIdAndRemove(commentId, function(err) {
+                Comment.findById(commentId, function(err, foundComment) {
+                    if(err) return console.log(err);
+                    
+                    // Look for the author's ID of each comment found
+                    User.findById(foundComment.author.id, function(err, foundUser){
                         if(err) return console.log("There was an error: " + err);
-                        console.log("Comment deleted!");
-                    });
-              });
-            });
-            return;
-        }).then(function() {
-            Campground.findByIdAndRemove(req.params.id, function(err) {
-                if(err) {
-                      console.log(err);
-                      req.flash("error", "Something went wrong. Could not complete the action.");
-                      res.redirect("back");
-                } else {
-                    req.flash("success", "Campground deleted!");
-                    res.redirect("/campgrounds");
-                }
-            }) ;
-        }).catch(function(error) {
-            console.log("This is the .catch() " + error);
-        })
-        
-        // function deleteUserComments() {
-        //     Campground.findById(req.params.id, function(err, foundCampground) {
-        //         if(err) return console.log(err) ;
-               
-        //         for(var i = 0; i < foundCampground.comments.length; i++) {
-        //             var commentId = foundCampground.comments[i];
-                   
-        //             Comment.findById(commentId, function(err, foundComment) {
-        //                 if(err) return console.log(err);
                         
-        //                 User.findById(foundComment.author.id, function(err, foundUser){
-        //                     if(err) return console.log("There was an error: " + err);
+                        console.log("This is outside of forEach: " + foundUser.comments);
+                        
+                        // Look for every comment the author has posted on any campground
+                        for(var t = 0; t < foundUser.comments.length; t++) {
+                            var comment = foundUser.comments[t];
                             
-        //                     console.log("This is outside of forEach: " + foundUser.comments);
+                            console.log("This is inside of forEach: " + foundUser.comments);
                             
-        //                     for(var t = 0; t < foundUser.comments.length; t++) {
-        //                         var comment = foundUser.comments[t];
+                            // Check if the comment from the current user we're iterating belongs to the current campground
+                            if(foundComment._id.equals(comment._id)) {
+                                console.log("The ID's are the same: " + foundComment._id + " AND " + comment._id);
                                 
-        //                         console.log("This is inside of forEach: " + foundUser.comments);
-                                
-        //                         if(foundComment._id.equals(comment._id)) {
-        //                             console.log("The ID's are the same: " + foundComment._id + " AND " + comment._id);
-                                    
-        //                             User.findByIdAndUpdate(foundUser._id, {$pull: {comments: {_id: comment._id}, campgrounds: {_id: foundCampground._id}}}, function(err) {
-        //                                 if(err) return console.log("The find and Update didn't quite work");
-        //                             });
-        //                             //if we delete the comment from the foundUser.comments array then break this loop and 
-        //                             //look for the next comment in the campground
-        //                             break;
-        //                         } else {
-        //                             console.log("ID'S DO NOT MATCH; FIRST: " + foundComment._id + " SECOND: " + comment._id);
-        //                         }
-        //                     }
-                            
-        //                 });
-        //             });
-        //         }
-        //     });
-        //     return;
-        // }
-        
-        // // delete corresponding comments from the DB comments collection
-        // function deleteComments() {
-        //     Campground.findById(req.params.id, function(err, foundCampground) {
-        //         if(err) return console.log(err) ;
-                
-        //         foundCampground.comments.forEach((commentId) => {
-        //             Comment.findByIdAndRemove(commentId, function(err) {
-        //                 if(err) return console.log("There was an error: " + err);
-        //                 console.log("Comment deleted!");
-        //             });
-        //       });
-        //     });
-        //     return;
-        // }
-    
-        // // delete the campground
-        // function deleteCampground() {
-        //     Campground.findByIdAndRemove(req.params.id, function(err) {
-        //         if(err) {
-        //               console.log(err);
-        //               req.flash("error", "Something went wrong. Could not complete the action.");
-        //               res.redirect("back");
-        //         } else {
-        //             req.flash("success", "Campground deleted!");
-        //             res.redirect("/campgrounds");
-        //         }
-        //     }) ;
-        //     return;
-        // }
-        
-        // fiber(function(){
-        //     await(deleteUserComments());
-        //     await(deleteComments());
-        //     await(deleteCampground());
-        // });
-        
-    
-    //delete corresponding comments from the DB comments collection
-    // function deleteComments() {
-    //     Campground.findById(req.params.id, function(err, foundCampground) {
-    //         if(err) return console.log(err) ;
+                                // If so delete that comment from that user
+                                User.findByIdAndUpdate(foundUser._id, {$pull: {comments: {_id: comment._id}, campgrounds: {_id: foundCampground._id}}}, function(err) {
+                                    if(err) reject(console.log("The find and Update didn't quite work"));
+                                });
+                                //if we delete the comment from the foundUser.comments array then break this loop and 
+                                //look for the next comment in the campground
+                                break;
+                            } else {
+                                console.log("ID'S DO NOT MATCH; FIRST: " + foundComment._id + " SECOND: " + comment._id);
+                            }
+                        }
+                        
+                    });
+                });
+            }
+            resolve();
+        });
+        // DELETE COMMENTS FROM DB THAT BELONG TO THE CAMPGROUND WE WANT TO DELETE
+    }).then(function() {
+        Campground.findById(req.params.id, function(err, foundCampground) {
+            if(err) return console.log(err) ;
             
-    //         foundCampground.comments.forEach((commentId) => {
-    //             Comment.findByIdAndRemove(commentId, function(err) {
-    //                 if(err) return console.log("There was an error: " + err);
-    //                 console.log("Comment deleted!");
-    //             });
-    //       });
-    //     });
-    // }
-    
-    //delete the campground
-    // function deleteCampground() {
-    //     Campground.findByIdAndRemove(req.params.id, function(err) {
-    //         if(err) {
-    //               console.log(err);
-    //               req.flash("error", "Something went wrong. Could not complete the action.");
-    //               res.redirect("back");
-    //         } else {
-    //             req.flash("success", "Campground deleted!");
-    //             res.redirect("/campgrounds");
-    //         }
-    //     }) ;
-    // }
-    
-    // deleteUserComments();
-    // deleteComments();
-    // deleteCampground();
+            foundCampground.comments.forEach((commentId) => {
+                Comment.findByIdAndRemove(commentId, function(err) {
+                    if(err) return console.log("There was an error: " + err);
+                    console.log("Comment deleted!");
+                });
+          });
+        });
+        return;
+        // DELETE THE CAMPGROUND
+    }).then(function() {
+        Campground.findByIdAndRemove(req.params.id, function(err) {
+            if(err) {
+                  console.log(err);
+                  req.flash("error", "Something went wrong. Could not complete the action.");
+                  res.redirect("back");
+            } else {
+                req.flash("success", "Campground deleted!");
+                res.redirect("/campgrounds");
+            }
+        }) ;
+        // CATCH ANY ERRORS
+    }).catch(function(error) {
+        console.log("This is the .catch() " + error);
+    });
 });
 
 
