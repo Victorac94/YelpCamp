@@ -31,9 +31,17 @@ router.post("/register", function(req, res) {
             lastName: req.body.lastName,
             email: req.body.email
         });
+        
+    if(req.body.password !== req.body.confirm) {
+        req.flash("error", "Passwords do not match.");
+        res.redirect("back");
+        return;
+    }
+    
     if(req.body.secretCode === "passCode1234") {
         newUser.isAdmin = true;
     }
+    
     User.register(newUser, req.body.password, function(err, user) {
         if(err) {
             console.log(err);
