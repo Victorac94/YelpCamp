@@ -1,8 +1,6 @@
 var express = require("express"),
     router  = express.Router(),
     User    = require("../models/user"),
-    Campground = require("../models/campground"),
-    Comment = require("../models/comment"),
     middleware = require("../middleware");
     
 

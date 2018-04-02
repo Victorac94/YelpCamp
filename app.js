@@ -6,10 +6,10 @@ var express         = require("express"),
     passport        = require("passport"),
     LocalStrategy   = require("passport-local"),
     methodOverride  = require("method-override"),
-    Campground      = require("./models/campground"),
-    Comment         = require("./models/comment"),
     User            = require("./models/user"),
     seedDB          = require("./seeds");
+    
+    require("dotenv/config");
     
     //requiring routes
 var campgroundRoutes = require("./routes/campgrounds"),
@@ -33,7 +33,7 @@ app.locals.moment = require('moment');
 
 //PASSPORT CONFIGURATION
 app.use(require("express-session")({
-    secret: "HolaHolitaVecinito!",
+    secret: process.env.PASSPORTSECRET,
     resave: false,
     saveUninitialized: false
 }));

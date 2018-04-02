@@ -3,10 +3,9 @@ var router  = express.Router();
 var Campground = require("../models/campground");
 var User    = require("../models/user");
 var Comment = require("../models/comment");
-var sync   = require("synchronize");
-var fiber = sync.fiber;
-var await = sync.await;
-var defer = sync.defer;
+
+require("dotenv/config");
+
 //Como hemos creado el archivo del middleware con el nombre 'index.js' aqui solo hace falta
 //requerir la carpeta padre. Ya que haciendo eso siempre busca el archivo que se llame 'index.'
 var middleware = require("../middleware");

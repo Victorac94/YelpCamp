@@ -1,14 +1,15 @@
 var express     = require("express"),
     router      = express.Router(),
+    async       = require("async"),
     passport    = require("passport"),
     User        = require("../models/user"),
-    Campground  = require("../models/campground"),
-    nodemailer  = require("nodemailer"),
     crypto      = require("crypto");
     
+require("dotenv/config");
+    
 //SETUP VARS FOR MAILGUN PASSWORD RESET
-var api_key = 'key-ee94626096513ee20bd578d74306ea27';
-var domain = 'sandbox2b24dacbc1bb419aac6c9461525c45cc.mailgun.org';
+var api_key = process.env.MAILGUN_API_KEY;
+var domain = process.env.MAILGUN_DOMAIN;
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
 
  
@@ -38,7 +39,7 @@ router.post("/register", function(req, res) {
         return;
     }
     
-    if(req.body.secretCode === "passCode1234") {
+    if(req.body.secretCode === process.env.ADMIN_CODE) {
         newUser.isAdmin = true;
     }
     
