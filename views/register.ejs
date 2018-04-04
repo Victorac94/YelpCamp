@@ -3,61 +3,70 @@
 <div class="container">
     <div class="row">
         <h1 class="text-center">Sign Up</h1>
-    
-        <div class="register-form">
-            <form action="/register" method="POST">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="username">*Username</label>
-                        <input class="form-control" type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required>
+        
+        <br>
+        <br>
+        
+        <div class="col-md-6 col-md-offset-3">
+            <div class="row">
+                <form action="/register" method="POST">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="username">*Username</label>
+                            <input class="form-control" type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">*Password</label>
+                            <input class="form-control" type="password" name="password" id="password" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm">*Confirm Password</label>
+                            <input class="form-control" type="password" name="confirm" id="confirm" placeholder="Confirm Password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">*Email</label>
+                            <input class="form-control" type="email" name="email" id="email" placeholder="Email" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="password">*Password</label>
-                        <input class="form-control" type="password" name="password" id="password" placeholder="Password" required>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input class="form-control" type="text" name="firstName" id="firstName" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="avatar">Avatar</label>
+                            <input class="form-control" type="text" name="avatar" id="avatar" placeholder="Profile Picture Url">
+                        </div>
+                        <div class="form-group">
+                            <label for="secretCode">Code</label>
+                            <input class="form-control" type="password" name="secretCode" id="secretCode" title="This is for admins only" placeholder="Only for admins">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="confirm">*Confirm Password</label>
-                        <input class="form-control" type="password" name="confirm" id="confirm" placeholder="Confirm Password" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">*Email</label>
-                        <input class="form-control" type="email" name="email" id="email" placeholder="Email" required>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input class="form-control" type="text" name="firstName" id="firstName" placeholder="First Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input class="form-control" type="text" name="lastName" id="lastName" placeholder="Last Name">
-                    </div>
-                    <div class="form-group">
-                        <label for="avatar">Avatar</label>
-                        <input class="form-control" type="text" name="avatar" id="avatar" placeholder="Profile Picture Url">
-                    </div>
-                    <div class="form-group">
-                        <label for="secretCode">Code</label>
-                        <input class="form-control" type="password" name="secretCode" id="secretCode" placeholder="Only for admins">
-                    </div>
-                    <div class="form-group">
+                    <div class="form-group paddingLR">
                         <label for="bio">Bio</label>
                         <textarea class="form-control" name="bio" id="bio" placeholder="About me"></textarea>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="form-group new-form-submit col-md-6 col-md-offset-3">
-                        <button class="btn btn-primary btn-block">SIGN UP!</button> 
+                    <div class="text-xs-center">
+                        <div class="g-recaptcha" data-sitekey="6LdPCFEUAAAAAMwtz6dv7Fy2UobmgASQHKRXCk6c"></div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-3">
-                        <p class="warning-text">*Note: Fields with asterisk (*) are required</p>
-                        <a href="/campgrounds">View Campgrounds</a>
+                    <div class="row">
+                        <div class="form-group new-form-submit col-md-6 col-md-offset-3">
+                            <button class="btn btn-primary btn-block">SIGN UP!</button> 
+                        </div>
                     </div>
-                </div>
-            </form>
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3">
+                            <p class="warning-text">*Note: Fields with asterisk (*) are required</p>
+                            <a href="/campgrounds">View Campgrounds</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+                
             
             
         </div>

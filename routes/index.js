@@ -3,7 +3,8 @@ var express     = require("express"),
     async       = require("async"),
     passport    = require("passport"),
     User        = require("../models/user"),
-    crypto      = require("crypto");
+    crypto      = require("crypto"),
+    request     = require("request");
     
 require("dotenv/config");
     
@@ -26,36 +27,55 @@ router.get("/register", function(req, res) {
 
 //handle sign up
 router.post("/register", function(req, res) {
-    var newUser = new User({
-            username: req.body.username,
-            firstName: req.body.firstName,
-            lastName: req.body.lastName,
-            email: req.body.email
-        });
-        
-    if(req.body.password !== req.body.confirm) {
-        req.flash("error", "Passwords do not match.");
-        res.redirect("back");
-        return;
+    const captcha = req.body["g-recaptcha-response"];
+    if(!captcha) {
+        req.flash("error", "Please select captcha");
+        return res.redirect("back");
     }
-    
-    if(req.body.secretCode === process.env.ADMIN_CODE) {
-        newUser.isAdmin = true;
-    }
-    
-    User.register(newUser, req.body.password, function(err, user) {
-        if(err) {
-            console.log(err);
-            return res.render("register", {"error": err.message});
-        } 
-        if(req.body.avatar != "") {
-            user.avatar = req.body.avatar;
-            user.save();
+    //Secret Key
+    var secretKey = process.env.CAPTCHA;
+    //Verify URL
+    var verifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captcha}&remoteip=${req.connection.remoteAddress}`;
+    //Make request to Verify URL
+    request.get(verifyURL, (err, response, body) => {
+        //If not successful
+        if (body.success !== undefined && !body.success) {
+            req.flash("error", "Captcha failed");
+            return res.redirect("back");
         }
-        passport.authenticate("local")(req, res, function(){
-            req.flash("success", "Welcome to YelpCamp " + user.username);
-            res.redirect("/campgrounds") ;
-        });
+        
+        var newUser = new User({
+                username: req.body.username,
+                firstName: req.body.firstName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                bio: req.body.bio
+            });
+            
+        if(req.body.password !== req.body.confirm) {
+            req.flash("error", "Passwords do not match.");
+            res.redirect("back");
+            return;
+        }
+        
+        if(req.body.secretCode === process.env.ADMIN_CODE) {
+            newUser.isAdmin = true;
+        }
+        
+        User.register(newUser, req.body.password, function(err, user) {
+            if(err) {
+                console.log(err);
+                return res.render("register", {"error": err.message});
+            } 
+            if(req.body.avatar != "") {
+                user.avatar = req.body.avatar;
+                user.save();
+            }
+            passport.authenticate("local")(req, res, function(){
+                req.flash("success", "Welcome to YelpCamp " + user.username);
+                res.redirect("/campgrounds") ;
+            });
+        }); 
     });
 });
 

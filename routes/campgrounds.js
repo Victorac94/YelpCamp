@@ -34,6 +34,11 @@ router.get("/", function(req, res) {
     });
 });
 
+//NEW - show form to create new campground
+router.get("/new", middleware.isLoggedIn, function(req, res) {
+   res.render("campgrounds/new", {googleApiKey: process.env.GOOGLEAPIKEY}) ;
+});
+
 //CREATE - add new campground to DB
 router.post("/", middleware.isLoggedIn, function(req, res) {
     // get data from form and add to campgrounds array
@@ -87,11 +92,6 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
     });
 });
 
-//NEW - show form to create new campground
-router.get("/new", middleware.isLoggedIn, function(req, res) {
-   res.render("campgrounds/new", {googleApiKey: process.env.GOOGLEAPIKEY}) ;
-});
-
 //NEW RANDOM - show form with random prefilled data
 router.get("/new/random", middleware.isLoggedIn, function(req, res) {
     var random = {};
@@ -99,7 +99,7 @@ router.get("/new/random", middleware.isLoggedIn, function(req, res) {
     random.price = faker.commerce.price();
     random.img = "https://source.unsplash.com/800x600/?nature";
     random.desc = faker.lorem.paragraph();
-    random.place = faker.address.zipCode();
+    random.place = faker.address.city();
     
     res.render("campgrounds/new-random", {random: random, googleApiKey: process.env.GOOGLEAPIKEY});
 });

@@ -15,15 +15,16 @@
                 <div class="thumbnail">
                     <img src="<%=user.avatar%>" alt="Profile picture">
                     <div class="paddingBox">
-                        <h4><em>Name: </em><%=user.firstName + " " + user.lastName%></h4>
-                        <p><em>Email: </em><%=user.email%></p>
-                        <p><em>Bio: </em><%=user.about%></p>
+                        <h4><b><em>Name: </em></b><%=user.firstName + " " + user.lastName%></h4>
+                        <p><b><em>Email: </em></b><%=user.email%></p>
+                        <p><b><em>Bio: </em></b><%=user.bio%></p>
                     </div>
                 </div>
             </div>
             <!-- USER CAMPGROUNDS -->
             <div class="col-md-4">
                 <h2 class="text-center titleColor">Added Campgrounds</h2>
+                <br>
                 <% campgrounds.forEach((camp) => { %>
                     <div class="thumbnail text-center leftRightMargin">
                         <img src="<%=camp.image%>" alt="<%=camp.name%>'s picture">
@@ -39,6 +40,7 @@
             <!-- USER COMMENTS -->
             <div class="col-md-4">
                 <h2 class="text-center titleColor">Comments</h2>
+                <br>
                 <% comments.forEach((comment) => { %>
                     <a href="/campgrounds/<%=comment.campground%>" class="preventLinkColor">
                         <div class="row commentBox">

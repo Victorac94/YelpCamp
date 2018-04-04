@@ -14,7 +14,7 @@ var UserSchema = new mongoose.Schema({
     email: {type: String, unique: true, required: true},
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    about: String,
+    bio: String,
     avatar: {
         type: String,
         default: "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433_960_720.png"

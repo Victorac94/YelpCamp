@@ -12,9 +12,23 @@
     margin: 30px auto;
 }
 
-.register-form {
-    width: 60%;
-    margin: 30px auto;
+.paddingLR {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.text-xs-center {
+        text-align: center;
+    }
+
+.g-recaptcha {
+    display: inline-block;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .inline-form {
