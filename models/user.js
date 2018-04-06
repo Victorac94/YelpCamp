@@ -17,7 +17,11 @@ var UserSchema = new mongoose.Schema({
     bio: String,
     avatar: {
         type: String,
-        default: "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433_960_720.png"
+        default: "https://res.cloudinary.com/victorac/image/upload/v1522975365/user-2517433_960_720.png"
+    },
+    avatarId: {
+        type: String,
+        default: "" 
     },
     isAdmin: {type: Boolean, default: false}, 
     comments: [commentSchema],

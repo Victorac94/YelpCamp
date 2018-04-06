@@ -3,6 +3,28 @@ var express = require("express"),
     User    = require("../models/user"),
     middleware = require("../middleware");
     
+var multer = require("multer");
+var storage = multer.diskStorage({
+  filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+var imageFilter = function (req, file, cb) {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+var upload = multer({ storage: storage, fileFilter: imageFilter})
+
+var cloudinary = require("cloudinary");
+cloudinary.config({ 
+  cloud_name: 'victorac', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+    
 
 //SHOW - USER PROFILE
 router.get("/users/:id", function(req, res) {
@@ -31,24 +53,92 @@ router.get("/users/:id/edit", middleware.checkProfileOwnership, function(req, re
 });
 
 //UPDATE - USER PROFILE
-router.put("/users/:id/edit", middleware.checkProfileOwnership, function(req, res) {
+router.put("/users/:id/edit", middleware.checkProfileOwnership, upload.single("avatarLocal"), function(req, res) {
     var newData = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         avatar: req.body.avatar,
         email: req.body.email,
         about: req.body.about
+    };
+    
+    //If a new image file has been uploaded
+    if(req.file) {
+        User.findById(req.params.id, function(err, foundUser) {
+            if(err) {
+                req.flash('error', err.message);
+                return res.redirect('back');
+            }
+            //Delete the file from cloudinary if there is already one
+            if(foundUser.avatarId !== ""){
+                cloudinary.v2.uploader.destroy(foundUser.avatarId, function(err, result) {
+                    if(err) {
+                        req.flash('error', err.message);
+                        return res.redirect('back');
+                    } 
+                    //Upload a new one
+                    cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
+                        if(err) {
+                            req.flash('error', err.message);
+                            return res.redirect('back');
+                        }
+                        // add cloudinary url for the user's avatar
+                        newData.avatar = result.secure_url;
+                        // add image's public_id to users's avatar_id
+                        newData.avatarId = result.public_id;
+                        
+                        User.findByIdAndUpdate(req.params.id, newData, function(err, updatedUser) {
+                            if(err) {
+                                console.log(err);
+                                req.flash("error", "There was an error");
+                                res.redirect("/users/" + req.params.id);
+                            } else {
+                                req.flash("success", "Profile successfully updated!");
+                                res.redirect("/users/" + req.params.id);
+                            }
+                        });
+                    });
+                });
+            } else {
+                //Upload a new one
+                cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
+                    if(err) {
+                        req.flash('error', err.message);
+                        return res.redirect('back');
+                    }
+                    // add cloudinary url for the user's avatar
+                    newData.avatar = result.secure_url;
+                    // add image's public_id to users's avatar_id
+                    newData.avatarId = result.public_id;
+                    
+                    User.findByIdAndUpdate(req.params.id, newData, function(err, updatedUser) {
+                        if(err) {
+                            console.log(err);
+                            req.flash("error", "There was an error");
+                            res.redirect("/users/" + req.params.id);
+                        } else {
+                            req.flash("success", "Profile successfully updated!");
+                            res.redirect("/users/" + req.params.id);
+                        }
+                    });
+                });
+            }
+        });
+    } else {
+        User.findByIdAndUpdate(req.params.id, newData, function(err, updatedUser) {
+            if(err) {
+                console.log(err);
+                req.flash("error", "There was an error");
+                res.redirect("/users/" + req.params.id);
+            } else {
+                req.flash("success", "Profile successfully updated!");
+                res.redirect("/users/" + req.params.id);
+            }
+        });
     }
-   User.findByIdAndUpdate(req.params.id, newData, function(err, updatedUser) {
-       if(err) {
-           console.log(err);
-           req.flash("error", "There was an error");
-           res.redirect("/users/" + req.params.id);
-       } else {
-           req.flash("success", "Profile successfully updated!");
-           res.redirect("/users/" + req.params.id);
-       }
-   });
+    
+    
+       
 });
 
 //EDIT - SHOW CHANGE PASSWORD
