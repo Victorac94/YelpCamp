@@ -64,8 +64,10 @@ textarea {
 
 .paddingComment {
     padding-top: 5px;
-    margin-left: -7px;
-    margin-right: -7px;
+    margin: 1px -7px;
+    border-radius: 3px;
+    background-color: #eee;
+    background: linear-gradient(to bottom, #f1f1f1, #ececec);
 }
 
 .paddingBox {
