@@ -37,6 +37,7 @@ app.use(require("express-session")({
     resave: false,
     saveUninitialized: false
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(User.serializeUser());
@@ -45,10 +46,10 @@ passport.use(new LocalStrategy(User.authenticate()));
 
 //Middleware that runs the funcion on every ROUTE and is available on every template (view)
 app.use(function(req, res, next) {
-   res.locals.currentUser = req.user; // 'currentUser' is the variable which we have access to on every Route && View
-   res.locals.error = req.flash("error");
-   res.locals.success = req.flash("success");
-   next();
+    res.locals.currentUser = req.user; // 'currentUser' is the variable which we have access to on every Route && View
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
+    next();
 });
 
 app.use(indexRoutes);

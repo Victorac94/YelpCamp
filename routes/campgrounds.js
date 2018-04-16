@@ -320,18 +320,12 @@ router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res) {
                     User.findById(foundComment.author.id, function(err, foundUser){
                         if(err) return console.log("There was an error: " + err);
                         
-                        console.log("This is outside of forEach: " + foundUser.comments);
-                        
                         // Look for every comment the author has posted on any campground
                         for(var t = 0; t < foundUser.comments.length; t++) {
                             var comment = foundUser.comments[t];
                             
-                            console.log("This is inside of forEach: " + foundUser.comments);
-                            
                             // Check if the comment from the current user we're iterating belongs to the current campground
                             if(foundComment._id.equals(comment._id)) {
-                                console.log("The ID's are the same: " + foundComment._id + " AND " + comment._id);
-                                
                                 // If so delete that comment from that user
                                 User.findByIdAndUpdate(foundUser._id, {$pull: {comments: {_id: comment._id}, campgrounds: {_id: foundCampground._id}}}, function(err) {
                                     if(err) reject(console.log("The find and Update didn't quite work"));

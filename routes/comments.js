@@ -37,7 +37,7 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
                 username: req.user.username
             },
             campground: req.params.id
-        }
+        };
         Comment.create(newComment, function(err, createdComment) {
            if(err) {
                console.log(err);
@@ -82,29 +82,62 @@ router.get("/:commentId/edit", middleware.checkCommentOwnership, function(req, r
 
 //UPDATE - Comment
 router.put("/:commentId", middleware.checkCommentOwnership, function(req, res) {
-   Comment.findByIdAndUpdate(req.params.commentId, req.body.comment, function(err, updatedComment) {
-       if(err) {
-           console.log(err);
-           req.flash("error", "Could not update the comment.");
-           return res.redirect("back");
-       } else {
-           req.flash("success", "Comment updated!");
-           res.redirect("/campgrounds/" + req.params.id);
-       }
-   }) ;
+    new Promise (function(resolve, reject) {
+        Comment.findByIdAndUpdate(req.params.commentId, req.body.comment, function(err, updatedComment) {
+            if(err) {
+                console.log(err);
+                req.flash("error", "Could not update the comment.");
+                return res.redirect("back");
+            } else {
+                req.flash("success", "Comment updated!");
+                res.redirect("/campgrounds/" + req.params.id);
+            }
+            resolve();
+        }) ;
+    }).then(function() {
+        User.findById(req.user._id, function(err, foundUser) {
+          if(err) console.log("The find and Update didn't work in router.put");
+          var subDoc = foundUser.comments.id(req.params.commentId);
+          subDoc.set(req.body.comment);
+          foundUser.save(function(err) {
+              if(err) return console.log(err);
+              return;
+          });
+        });
+    }).catch(function(error) { // CATCH ANY ERRORS
+       console.log("This is the .catch from router.put: " + error) ;
+    });
+    
 });
 
 //DESTROY - Comment
 router.delete("/:commentId", middleware.checkCommentOwnership, function(req, res) {
-   Comment.findByIdAndRemove(req.params.commentId, function(err) {
-       if(err) {
-           console.log(err);
-           req.flash("error", "Something went wrong. Could not delete the comment.");
-           return res.redirect("back");
-       }
-       req.flash("success", "Comment deleted!");
-       res.redirect("/campgrounds/" + req.params.id);
-   });
+    new Promise (function(resolve, reject) {
+        // DELETE CORRESPONDING COMMENT FROM THE USER MODEL
+        User.findByIdAndUpdate(req.user._id, {$pull: {comments: {_id: req.params.commentId}}}, function(err) {
+            if(err) reject(console.log("The find and Update didn't quite work"));
+            resolve();
+        });
+    }).then(function() {    // DELETE THE COMMENT FROM THE CAMPGROUND MODEL
+        Campground.findByIdAndUpdate(req.params.id, {$pull: {comments: req.params.commentId}}, function(err) {
+            if(err) return console.log(err) ;
+        });
+        return;
+    }).then(function() {    // DELETE THE COMMENT FROM THE COMMENT MODEL
+        Comment.findByIdAndRemove(req.params.commentId, function(err) {
+            if(err) {
+                  console.log(err);
+                  req.flash("error", "Something went wrong. Could not complete the action.");
+                  res.redirect("back");
+            } else {
+                req.flash("success", "Comment deleted!");
+                res.redirect("/campgrounds/" + req.params.id);
+            }
+        });
+        
+    }).catch(function(error) {  // CATCH ANY ERRORS
+        console.log("This is the .catch() " + error);
+    });
 });
 
 
