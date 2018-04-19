@@ -15,6 +15,10 @@ var commentSchema = mongoose.Schema({
       },
       username: String
    },
+   edited: {
+      type: Boolean,
+      default: false
+   },
    campground: String
 });
 

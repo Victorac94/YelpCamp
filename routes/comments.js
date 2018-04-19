@@ -83,6 +83,8 @@ router.get("/:commentId/edit", middleware.checkCommentOwnership, function(req, r
 //UPDATE - Comment
 router.put("/:commentId", middleware.checkCommentOwnership, function(req, res) {
     new Promise (function(resolve, reject) {
+        req.body.comment.edited = true;
+        
         Comment.findByIdAndUpdate(req.params.commentId, req.body.comment, function(err, updatedComment) {
             if(err) {
                 console.log(err);
