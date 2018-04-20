@@ -10,6 +10,7 @@
         <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
         <script src='https://www.google.com/recaptcha/api.js'></script>
+        <script src="/login.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-default">
@@ -41,7 +42,7 @@
                     </form>
                     <ul class="nav navbar-nav navbar-right">
                         <% if(!currentUser){ %>
-                            <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a href="/login">Login</a></li>
+                            <li class="<%= typeof page !== 'undefined' && page === 'login' ? 'active' : '' %>"><a class="showLogin" href="#">Login</a></li>
                             <li class="<%= typeof page !== 'undefined' && page === 'register' ? 'active' : '' %>"><a href="/register">Sign Up</a></li>
                         <% } else { %>
                             <li class="<%= typeof page !== 'undefined' && page === 'profile' ? 'active' : '' %>">
@@ -65,4 +66,25 @@
                     <%= success %>
                 </div>
             <% } %>
+        </div>
+        
+        <div id="loginModal">
+            <div id="loginForm">
+                <h2 class="text-center">Log In</h2>
+                <div class="new-form">
+                    <form action="/login" method="POST">
+                        <div class="form-group">
+                            <input class="form-control" type="text" name="username" placeholder="Username" autofocus="autofocus">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" type="password" name="password" placeholder="Password">
+                        </div>
+                        <div class="form-group new-form-submit">
+                            <input id="submitLogin" type="submit" class="btn btn-lg btn-primary btn-block" value="Login">
+                        </div>
+                    </form>
+                    <a id="forgotPSW" href="/forgot">Forgot your password?</a>
+                    <p>Or <a id="createAcc" href="/register">Create a new account</a></p>
+                </div>
+            </div>
         </div>

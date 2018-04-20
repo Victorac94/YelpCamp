@@ -7,19 +7,6 @@ var User    = require("../models/user");
 //requerir la carpeta padre. Ya que haciendo eso siempre busca el archivo que se llame 'index.'
 var middleware = require("../middleware");
 
-//NEW - Comment
-router.get("/new", middleware.isLoggedIn, function(req, res) {
-    Campground.findById(req.params.id, function(err, foundCampground) {
-        if(err || !foundCampground) {
-            console.log(err);
-            req.flash("error", "Could not find the Campground.");
-            res.redirect("/campgrounds");
-        } else {
-            res.render("comments/new", {campground: foundCampground});   
-        } 
-    });
-});
-
 //CREATE - Comment
 router.post("/", middleware.isLoggedIn, function(req, res) {
    //Find campground using ID
@@ -67,17 +54,6 @@ router.post("/", middleware.isLoggedIn, function(req, res) {
         });
       }
    });
-});
-
-//EDIT - Comment
-router.get("/:commentId/edit", middleware.checkCommentOwnership, function(req, res) {
-    Comment.findById(req.params.commentId, function(err, foundComment) {
-        if(err) {
-            console.log(err);
-        } else {
-            res.render("comments/edit", {campgroundId: req.params.id, comment: foundComment});
-        }
-    });
 });
 
 //UPDATE - Comment
